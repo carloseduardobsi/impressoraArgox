@@ -20,6 +20,8 @@ import orcamento.conexao.BDMAKER;
 public class Impressao extends javax.swing.JFrame {
 
     Cadprod cadprod = new Cadprod();
+     Integer quantidade=1;
+     
 
     /**
      * Creates new form Impressao
@@ -43,6 +45,8 @@ public class Impressao extends javax.swing.JFrame {
         descricaoProduto = new javax.swing.JTextPane();
         botaoBuscarProduto = new javax.swing.JButton();
         botaoImprimir = new javax.swing.JButton();
+        CampoQuantidade = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -71,6 +75,8 @@ public class Impressao extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setText("Quantidade:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -78,17 +84,21 @@ public class Impressao extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CodigoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(botaoBuscarProduto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(botaoImprimir)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                        .addComponent(botaoImprimir))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(CodigoProduto, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+                            .addComponent(CampoQuantidade))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -100,7 +110,11 @@ public class Impressao extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(CodigoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CampoQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(15, 15, 15)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(botaoBuscarProduto)
                             .addComponent(botaoImprimir)))
@@ -123,23 +137,31 @@ public class Impressao extends javax.swing.JFrame {
         if (cadprod.getPr_codbarra()==null){
             JOptionPane.showMessageDialog(null, "Nenhum produto encontrado para impressão", "Informação", JOptionPane.INFORMATION_MESSAGE);
             CodigoProduto.grabFocus();
+            try {
+                quantidade = Integer.parseInt(CampoQuantidade.getText());
+                
+                
+            } catch (Exception e) {
+                
+                JOptionPane.showMessageDialog(null, "Quantidade inválida", "Informação", JOptionPane.INFORMATION_MESSAGE);
+                CampoQuantidade.grabFocus();
+            }
             
         }else{
               print.imprime("L\n"
                 + "e\n"
                 + "m\n"
-                + "Q0001\n"
+                + "Q000"+quantidade+"\n"
                 + "1F1113000210090" + cadprod.getPr_codbarra() + "\n"
                 + "411100000500450" + cadprod.getpr_codseq() + "\n"
                 + "1F1113000210650" + cadprod.getPr_codbarra() + "\n"
-                + "411100000501000130550" + cadprod.getpr_codseq() + "\n"
+                + "411100000501000" + cadprod.getpr_codseq() + "\n"
                 + "E");
                 cadprod = new Cadprod();
                 descricaoProduto.setText(cadprod.getpr_descricao()); ;
-                CodigoProduto.setText(" "); ;
-                
-                
-            
+                CodigoProduto.setText(" "); 
+                CampoQuantidade.setText("1");
+           
         }
       
     }//GEN-LAST:event_botaoImprimirActionPerformed
@@ -147,6 +169,7 @@ public class Impressao extends javax.swing.JFrame {
     private void botaoBuscarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoBuscarProdutoActionPerformed
 
         EntityManager pegadodbmaker = BDMAKER.getEntityManager();
+        CampoQuantidade.setText("1");
 
         try {
             Integer codigoProduto = Integer.parseInt(CodigoProduto.getText());
@@ -196,11 +219,13 @@ public class Impressao extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField CampoQuantidade;
     private javax.swing.JTextField CodigoProduto;
     private javax.swing.JButton botaoBuscarProduto;
     private javax.swing.JButton botaoImprimir;
     private javax.swing.JTextPane descricaoProduto;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
 }
