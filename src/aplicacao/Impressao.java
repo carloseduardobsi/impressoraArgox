@@ -142,7 +142,7 @@ public class Impressao extends javax.swing.JFrame {
                 
                 
             } catch (Exception e) {
-                
+                CampoQuantidade.setText("1");
                 JOptionPane.showMessageDialog(null, "Quantidade inválida", "Informação", JOptionPane.INFORMATION_MESSAGE);
                 CampoQuantidade.grabFocus();
             }
@@ -169,12 +169,13 @@ public class Impressao extends javax.swing.JFrame {
     private void botaoBuscarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoBuscarProdutoActionPerformed
 
         EntityManager pegadodbmaker = BDMAKER.getEntityManager();
-        CampoQuantidade.setText("1");
+        
 
         try {
             Integer codigoProduto = Integer.parseInt(CodigoProduto.getText());
             cadprod = pegadodbmaker.find(Cadprod.class, codigoProduto, LockModeType.NONE);
             descricaoProduto.setText(cadprod.getpr_descricao());
+            quantidade= Integer.parseInt(CampoQuantidade.getText());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Esse Campo só aceita números", "Informação", JOptionPane.INFORMATION_MESSAGE);
             CodigoProduto.grabFocus();
