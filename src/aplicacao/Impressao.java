@@ -20,8 +20,7 @@ import orcamento.conexao.BDMAKER;
 public class Impressao extends javax.swing.JFrame {
 
     Cadprod cadprod = new Cadprod();
-     Integer quantidade=1;
-     
+    Integer quantidade = 1;
 
     /**
      * Creates new form Impressao
@@ -133,49 +132,57 @@ public class Impressao extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         ImpressaoArgox print = new ImpressaoArgox();
-        
-        if (cadprod.getPr_codbarra()==null){
+
+        if (cadprod.getPr_codbarra() == null) {
             JOptionPane.showMessageDialog(null, "Nenhum produto encontrado para impressão", "Informação", JOptionPane.INFORMATION_MESSAGE);
             CodigoProduto.grabFocus();
+
+        } else {
             try {
                 quantidade = Integer.parseInt(CampoQuantidade.getText());
-                
-                
+                String comando = null;
+                if (quantidade > 9) {
+                    comando = "Q00" + quantidade;
+
+                } else {
+                    comando = "Q000" + quantidade;
+                }
+                print.imprime("L\n"
+                        + "e\n"
+                        + "m\n"
+                        + comando + "\n"
+                        + "1F1113000210090" + cadprod.getPr_codbarra() + "\n"
+                        + "411100000500450" + cadprod.getpr_codseq() + "\n"
+                        + "1F1113000210650" + cadprod.getPr_codbarra() + "\n"
+                        + "411100000501000" + cadprod.getpr_codseq() + "\n"
+                        + "E");
+
             } catch (Exception e) {
-                CampoQuantidade.setText("1");
+
                 JOptionPane.showMessageDialog(null, "Quantidade inválida", "Informação", JOptionPane.INFORMATION_MESSAGE);
                 CampoQuantidade.grabFocus();
+
             }
-            
-        }else{
-              print.imprime("L\n"
-                + "e\n"
-                + "m\n"
-                + "Q000"+quantidade+"\n"
-                + "1F1113000210090" + cadprod.getPr_codbarra() + "\n"
-                + "411100000500450" + cadprod.getpr_codseq() + "\n"
-                + "1F1113000210650" + cadprod.getPr_codbarra() + "\n"
-                + "411100000501000" + cadprod.getpr_codseq() + "\n"
-                + "E");
-                cadprod = new Cadprod();
-                descricaoProduto.setText(cadprod.getpr_descricao()); ;
-                CodigoProduto.setText(" "); 
-                CampoQuantidade.setText("1");
-           
+
+            cadprod = new Cadprod();
+            descricaoProduto.setText(cadprod.getpr_descricao());;
+            CodigoProduto.setText(" ");
+            quantidade = 1;
+            CampoQuantidade.setText(" ");
+
         }
-      
+
     }//GEN-LAST:event_botaoImprimirActionPerformed
 
     private void botaoBuscarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoBuscarProdutoActionPerformed
 
         EntityManager pegadodbmaker = BDMAKER.getEntityManager();
-        
 
         try {
             Integer codigoProduto = Integer.parseInt(CodigoProduto.getText());
             cadprod = pegadodbmaker.find(Cadprod.class, codigoProduto, LockModeType.NONE);
             descricaoProduto.setText(cadprod.getpr_descricao());
-            quantidade= Integer.parseInt(CampoQuantidade.getText());
+            quantidade = Integer.parseInt(CampoQuantidade.getText());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Esse Campo só aceita números", "Informação", JOptionPane.INFORMATION_MESSAGE);
             CodigoProduto.grabFocus();
